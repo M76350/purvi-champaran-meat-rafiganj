@@ -52,12 +52,12 @@ export function ContactSection() {
             </span>
           </p>
         </div>
-
+        {/* <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3621.3875622302407!2d84.63378787595126!3d24.81641644701754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398d21a6480a5333%3A0xd7b95d3b5ade425a!2sPurvi%20Champaran%20Handi%20Meat%2C%20Rafiganj!5e0!3m2!1sen!2sin!4v1769859594551!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> */}
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Google Maps */}
           <div className="rounded-2xl overflow-hidden shadow-xl border border-border/50 h-[400px]">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14447.764854755947!2d84.63!3d24.81!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f32b4f6b9bba57%3A0x5c5b8b8b8b8b8b8b!2sRafiganj%2C%20Bihar!5e0!3m2!1sen!2sin!4v1234567890123"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3621.3875622302407!2d84.63378787595126!3d24.81641644701754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398d21a6480a5333%3A0xd7b95d3b5ade425a!2sPurvi%20Champaran%20Handi%20Meat%2C%20Rafiganj!5e0!3m2!1sen!2sin!4v1769859594551!5m2!1sen!2sin"
               width="100%"
               height="100%"
               style={{ border: 0 }}
