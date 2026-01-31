@@ -1,8 +1,9 @@
 # Welcome to your Lovable project
 
 ## Project info
+https://champaran-delight.vercel.app/
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**URL**:(https://champaran-delight.vercel.app/)
 
 ## How can I edit this code?
 
@@ -10,7 +11,7 @@ There are several ways of editing your application.
 
 **Use Lovable**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Simply visit the  https://champaran-delight.vercel.app/ and start prompting.
 
 Changes made via Lovable will be committed automatically to this repo.
 
