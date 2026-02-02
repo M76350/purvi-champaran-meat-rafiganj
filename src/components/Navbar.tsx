@@ -1,22 +1,23 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Sun, Moon, Phone } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, Sun, Moon, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTheme } from '@/hooks/useTheme';
-import { useLanguage } from '@/hooks/useLanguage';
+import { NavLink } from './NavLink';
 
 const navLinks = [
-  { href: '#home', labelEn: 'Home', labelHi: 'होम' },
-  { href: '#menu', labelEn: 'Menu', labelHi: 'मेन्यू' },
-  { href: '#about', labelEn: 'About', labelHi: 'हमारे बारे में' },
-  { href: '#contact', labelEn: 'Contact', labelHi: 'संपर्क' },
+  { to: '/', labelEn: 'Home', labelHi: 'होम' },
+  { to: '/menu', labelEn: 'Menu', labelHi: 'मेन्यू' },
+  { to: '/about', labelEn: 'About', labelHi: 'हमारे बारे में' },
+  { to: '/contact', labelEn: 'Contact', labelHi: 'संपर्क' },
 ];
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const { t } = useLanguage();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,13 +27,10 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = (href: string) => {
+  // Close mobile menu on route change
+  useEffect(() => {
     setIsOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  }, [location.pathname]);
 
   return (
     <nav
@@ -45,7 +43,7 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="#home" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 group">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground font-bold text-lg md:text-xl shadow-lg group-hover:scale-110 transition-transform">
               🍖
             </div>
@@ -59,20 +57,17 @@ export function Navbar() {
                 <span className="hi-text hindi-text">हांडी मीट, रफीगंज</span>
               </p>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
-              <button
-                key={link.href}
-                onClick={() => handleNavClick(link.href)}
-                className="text-foreground hover:text-primary transition-colors font-medium relative group"
-              >
-                <span className="en-text">{link.labelEn}</span>
-                <span className="hi-text hindi-text">{link.labelHi}</span>
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-              </button>
+              <NavLink
+                key={link.to}
+                to={link.to}
+                labelEn={link.labelEn}
+                labelHi={link.labelHi}
+              />
             ))}
           </div>
 
@@ -135,14 +130,13 @@ export function Navbar() {
                   {/* Mobile Nav Links */}
                   <div className="flex flex-col gap-4">
                     {navLinks.map((link) => (
-                      <button
-                        key={link.href}
-                        onClick={() => handleNavClick(link.href)}
-                        className="text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
-                      >
-                        <span className="en-text">{link.labelEn}</span>
-                        <span className="hi-text hindi-text">{link.labelHi}</span>
-                      </button>
+                      <NavLink
+                        key={link.to}
+                        to={link.to}
+                        labelEn={link.labelEn}
+                        labelHi={link.labelHi}
+                        className="text-lg py-2"
+                      />
                     ))}
                   </div>
 

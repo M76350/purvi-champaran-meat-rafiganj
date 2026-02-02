@@ -1,23 +1,15 @@
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowDown, Phone, Utensils } from 'lucide-react';
+import champaranHandiMutton from '@/assets/menu/champaran-handi-mutton-1.webp';
 
 export function HeroSection() {
-  const scrollToMenu = () => {
-    const menuSection = document.querySelector('#menu');
-    if (menuSection) {
-      menuSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
-    <section
-      id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-    >
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1545247181-516773cae754?w=1920"
+          src={champaranHandiMutton}
           alt="Champaran Handi Mutton"
           className="w-full h-full object-cover"
         />
@@ -79,16 +71,17 @@ export function HeroSection() {
                 <span className="hi-text hindi-text">अभी ऑर्डर करें</span>
               </Button>
             </a>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={scrollToMenu}
-              className="text-lg px-8 py-6 gap-2 border-2 border-primary/50 hover:bg-primary/10"
-            >
-              <Utensils className="h-5 w-5" />
-              <span className="en-text">View Menu</span>
-              <span className="hi-text hindi-text">मेन्यू देखें</span>
-            </Button>
+            <Link to="/menu">
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-8 py-6 gap-2 border-2 border-primary/50 hover:bg-primary/10"
+              >
+                <Utensils className="h-5 w-5" />
+                <span className="en-text">View Menu</span>
+                <span className="hi-text hindi-text">मेन्यू देखें</span>
+              </Button>
+            </Link>
           </div>
 
           {/* Features */}
@@ -119,8 +112,8 @@ export function HeroSection() {
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <button
-            onClick={scrollToMenu}
+          <Link
+            to="/menu"
             className="flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
           >
             <span className="text-sm">
@@ -128,7 +121,7 @@ export function HeroSection() {
               <span className="hi-text hindi-text">मेन्यू देखें</span>
             </span>
             <ArrowDown className="h-5 w-5" />
-          </button>
+          </Link>
         </div>
       </div>
     </section>

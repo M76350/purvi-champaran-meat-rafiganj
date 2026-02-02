@@ -1,19 +1,19 @@
 import { Navbar } from '@/components/Navbar';
-import { HeroSection } from '@/components/HeroSection';
+import { ContactSection } from '@/components/ContactSection';
 import { Footer } from '@/components/Footer';
-import { WelcomePopup } from '@/components/WelcomePopup';
 import { WhatsAppFloatingButton } from '@/components/TawkToWidget';
 
-const Index = () => {
+const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <HeroSection />
+      <div className="pt-20">
+        <ContactSection />
+      </div>
       <Footer />
-      <WelcomePopup />
       <WhatsAppFloatingButton />
     </div>
   );
 };
 
-export default Index;
+export default Contact;

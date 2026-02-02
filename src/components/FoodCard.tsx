@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Phone, Info, Flame } from 'lucide-react';
+import { Phone, Info, Flame, Check } from 'lucide-react';
 
 interface FoodCardProps {
   item: MenuItem;
@@ -31,6 +31,110 @@ export function FoodCard({ item }: FoodCardProps) {
         {Array.from({ length: item.spiceLevel }).map((_, i) => (
           <Flame key={i} className="h-3 w-3 text-destructive fill-destructive" />
         ))}
+      </div>
+    );
+  };
+
+  const renderPricing = () => {
+    switch (item.pricingType) {
+      case 'per-kg':
+        return (
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold text-primary">₹{item.price}</span>
+              {item.originalPrice && (
+                <span className="text-sm text-muted-foreground line-through">
+                  ₹{item.originalPrice}
+                </span>
+              )}
+            </div>
+            <span className="text-xs text-muted-foreground">
+              <span className="en-text">per kg</span>
+              <span className="hi-text hindi-text">प्रति किलो</span>
+            </span>
+          </div>
+        );
+      case 'per-piece':
+        return (
+          <div className="flex flex-col">
+            <span className="text-xl font-bold text-primary">₹{item.price}</span>
+            <span className="text-xs text-muted-foreground">
+              <span className="en-text">per piece</span>
+              <span className="hi-text hindi-text">प्रति पीस</span>
+            </span>
+          </div>
+        );
+      case 'per-unit':
+        return (
+          <div className="flex flex-col">
+            <span className="text-xl font-bold text-primary">₹{item.price}</span>
+            <span className="text-xs text-muted-foreground">
+              <span className="en-text">per unit</span>
+              <span className="hi-text hindi-text">प्रति यूनिट</span>
+            </span>
+          </div>
+        );
+      case 'full-half':
+        return (
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-primary">₹{item.price}</span>
+              <span className="text-xs text-muted-foreground">
+                <span className="en-text">Full</span>
+                <span className="hi-text hindi-text">फुल</span>
+              </span>
+            </div>
+            {item.halfPrice && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-secondary">₹{item.halfPrice}</span>
+                <span className="text-xs text-muted-foreground">
+                  <span className="en-text">Half</span>
+                  <span className="hi-text hindi-text">हाफ</span>
+                </span>
+              </div>
+            )}
+          </div>
+        );
+      case 'thali':
+        return (
+          <div className="flex flex-col">
+            <span className="text-xl font-bold text-primary">₹{item.price}</span>
+            <span className="text-xs text-muted-foreground">
+              <span className="en-text">per thali</span>
+              <span className="hi-text hindi-text">प्रति थाली</span>
+            </span>
+          </div>
+        );
+      default:
+        return (
+          <div className="flex items-center gap-2">
+            <span className="text-xl font-bold text-primary">₹{item.price}</span>
+            {item.originalPrice && (
+              <span className="text-sm text-muted-foreground line-through">
+                ₹{item.originalPrice}
+              </span>
+            )}
+          </div>
+        );
+    }
+  };
+
+  const renderIncludes = () => {
+    if (!item.includes) return null;
+    return (
+      <div className="mt-2">
+        <p className="text-xs font-medium text-muted-foreground mb-1">
+          <span className="en-text">Includes:</span>
+          <span className="hi-text hindi-text">शामिल:</span>
+        </p>
+        <div className="flex flex-wrap gap-1">
+          <span className="en-text text-xs text-muted-foreground">
+            {item.includes.en.join(' • ')}
+          </span>
+          <span className="hi-text hindi-text text-xs text-muted-foreground">
+            {item.includes.hi.join(' • ')}
+          </span>
+        </div>
       </div>
     );
   };
@@ -101,21 +205,17 @@ export function FoodCard({ item }: FoodCardProps) {
           </h3>
 
           {/* Description */}
-          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+          <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
             <span className="en-text">{item.descriptionEn}</span>
             <span className="hi-text hindi-text">{item.descriptionHi}</span>
           </p>
 
+          {/* Includes for thali/handi items */}
+          {(item.pricingType === 'thali' || item.pricingType === 'per-kg') && renderIncludes()}
+
           {/* Price and Spice Level */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-primary">₹{item.price}</span>
-              {item.originalPrice && (
-                <span className="text-sm text-muted-foreground line-through">
-                  ₹{item.originalPrice}
-                </span>
-              )}
-            </div>
+          <div className="flex items-center justify-between mb-4 mt-3">
+            {renderPricing()}
             {renderSpiceLevel()}
           </div>
 
@@ -159,14 +259,34 @@ export function FoodCard({ item }: FoodCardProps) {
               <span className="en-text">{item.descriptionEn}</span>
               <span className="hi-text hindi-text">{item.descriptionHi}</span>
             </DialogDescription>
+
+            {/* Includes in Dialog */}
+            {item.includes && (
+              <div className="bg-muted/50 rounded-lg p-3">
+                <p className="text-sm font-semibold mb-2">
+                  <span className="en-text">What's Included:</span>
+                  <span className="hi-text hindi-text">क्या शामिल है:</span>
+                </p>
+                <ul className="space-y-1">
+                  {item.includes.en.map((inc, idx) => (
+                    <li key={idx} className="en-text flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-green-500" />
+                      {inc}
+                    </li>
+                  ))}
+                  {item.includes.hi.map((inc, idx) => (
+                    <li key={idx} className="hi-text hindi-text flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-green-500" />
+                      {inc}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold text-primary">₹{item.price}</span>
-                {item.originalPrice && (
-                  <span className="text-muted-foreground line-through">
-                    ₹{item.originalPrice}
-                  </span>
-                )}
+              <div>
+                {renderPricing()}
               </div>
               <div className="flex items-center gap-2">
                 {item.isVeg ? (
