@@ -6,6 +6,7 @@ import { WhatsAppFloatingButton } from '@/components/TawkToWidget';
 import { MenuSection } from '@/components/MenuSection';
 import { AboutSection } from '@/components/AboutSection';
 import { ContactSection } from '@/components/ContactSection';
+import AutoImageSlider from '@/components/AutoImageSlider';
 
 const Index = () => {
   return (
@@ -13,6 +14,7 @@ const Index = () => {
       <Navbar />
       <HeroSection />
       <MenuSection />
+      <AutoImageSlider />
       <AboutSection />
       <ContactSection />
       <Footer />

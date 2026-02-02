@@ -13,16 +13,16 @@ export function Footer() {
       <div className="bg-black py-4 border-b border-gray-800">
         <div className="container mx-auto px-6 flex flex-col md:flex-row justify-center md:justify-between items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-orange-500" />
-            <span>1010 Avenue, sw 54321, Chandigarh</span>
+            <MapPin className="h-8 w-8 text-orange-500" />
+            <span>2025 Avenue, Rafiganj</span>
           </div>
           <div className="flex items-center gap-2">
-            <Phone className="h-5 w-5 text-orange-500" />
-            <span>98765 43210</span>
+            <Phone className="h-8 w-8 text-orange-500" />
+            <span> +91 74249 61362</span>
           </div>
           <div className="flex items-center gap-2">
-            <Mail className="h-5 w-5 text-orange-500" />
-            <span>mail@info.com</span>
+            <Mail className="h-8 w-8 text-orange-500" />
+            <span>champaranmeatrafiganj@gmail.com</span>
           </div>
         </div>
       </div>

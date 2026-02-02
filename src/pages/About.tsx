@@ -10,6 +10,7 @@ const About = () => {
       <div className="pt-20">
         <AboutSection />
       </div>
+
       <Footer />
       <WhatsAppFloatingButton />
     </div>
