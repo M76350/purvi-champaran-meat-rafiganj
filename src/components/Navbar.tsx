@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTheme } from '@/hooks/useTheme';
 import { NavLink } from './NavLink';
-
+import { CartButton } from './CartDrawer';
 const navLinks = [
   { to: '/', labelEn: 'Home', labelHi: 'होम' },
   { to: '/menu', labelEn: 'Menu', labelHi: 'मेन्यू' },
@@ -73,6 +73,9 @@ export function Navbar() {
 
           {/* Actions */}
           <div className="flex items-center gap-2 md:gap-4">
+            {/* Cart Button */}
+            <CartButton />
+
             {/* Theme Toggle */}
             <Button
               variant="ghost"
