@@ -9,7 +9,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Phone, Info, Flame, Check } from 'lucide-react';
+import { Info, Flame, Check, ShoppingCart, Plus, Minus } from 'lucide-react';
+import { useCart, getQuantityOptions, getQuantityLabel, calculatePrice, QuantityOption } from '@/hooks/useCart';
 
 interface FoodCardProps {
   item: MenuItem;
@@ -18,11 +19,20 @@ interface FoodCardProps {
 export function FoodCard({ item }: FoodCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<QuantityOption>(() => {
+    const options = getQuantityOptions(item.pricingType);
+    return options[options.length - 1]; // Default to largest option
+  });
+  const [quantity, setQuantity] = useState(1);
+  
+  const { addToCart } = useCart();
+  const quantityOptions = getQuantityOptions(item.pricingType);
+  const currentPrice = calculatePrice(item, selectedOption);
 
-  const whatsappMessage = encodeURIComponent(
-    `Hi, I would like to order: ${item.nameEn} - ₹${item.price}`
-  );
-  const whatsappLink = `https://wa.me/917424961362?text=${whatsappMessage}`;
+  const handleAddToCart = () => {
+    addToCart(item, selectedOption, quantity);
+    setQuantity(1);
+  };
 
   const renderSpiceLevel = () => {
     if (!item.spiceLevel) return null;
@@ -35,88 +45,32 @@ export function FoodCard({ item }: FoodCardProps) {
     );
   };
 
-  const renderPricing = () => {
-    switch (item.pricingType) {
-      case 'per-kg':
-        return (
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-primary">₹{item.price}</span>
-              {item.originalPrice && (
-                <span className="text-sm text-muted-foreground line-through">
-                  ₹{item.originalPrice}
-                </span>
-              )}
-            </div>
-            <span className="text-xs text-muted-foreground">
-              <span className="en-text">per kg</span>
-              <span className="hi-text hindi-text">प्रति किलो</span>
-            </span>
-          </div>
-        );
-      case 'per-piece':
-        return (
-          <div className="flex flex-col">
-            <span className="text-xl font-bold text-primary">₹{item.price}</span>
-            <span className="text-xs text-muted-foreground">
-              <span className="en-text">per piece</span>
-              <span className="hi-text hindi-text">प्रति पीस</span>
-            </span>
-          </div>
-        );
-      case 'per-unit':
-        return (
-          <div className="flex flex-col">
-            <span className="text-xl font-bold text-primary">₹{item.price}</span>
-            <span className="text-xs text-muted-foreground">
-              <span className="en-text">per unit</span>
-              <span className="hi-text hindi-text">प्रति यूनिट</span>
-            </span>
-          </div>
-        );
-      case 'full-half':
-        return (
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-primary">₹{item.price}</span>
-              <span className="text-xs text-muted-foreground">
-                <span className="en-text">Full</span>
-                <span className="hi-text hindi-text">फुल</span>
-              </span>
-            </div>
-            {item.halfPrice && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-secondary">₹{item.halfPrice}</span>
-                <span className="text-xs text-muted-foreground">
-                  <span className="en-text">Half</span>
-                  <span className="hi-text hindi-text">हाफ</span>
-                </span>
-              </div>
-            )}
-          </div>
-        );
-      case 'thali':
-        return (
-          <div className="flex flex-col">
-            <span className="text-xl font-bold text-primary">₹{item.price}</span>
-            <span className="text-xs text-muted-foreground">
-              <span className="en-text">per thali</span>
-              <span className="hi-text hindi-text">प्रति थाली</span>
-            </span>
-          </div>
-        );
-      default:
-        return (
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-primary">₹{item.price}</span>
-            {item.originalPrice && (
-              <span className="text-sm text-muted-foreground line-through">
-                ₹{item.originalPrice}
-              </span>
-            )}
-          </div>
-        );
-    }
+  const renderQuantityOptions = () => {
+    if (quantityOptions.length <= 1) return null;
+    
+    return (
+      <div className="flex flex-wrap gap-1 mb-3">
+        {quantityOptions.map((option) => {
+          const price = calculatePrice(item, option);
+          const isSelected = selectedOption === option;
+          return (
+            <button
+              key={option}
+              onClick={() => setSelectedOption(option)}
+              className={`px-2 py-1 text-xs rounded-md border transition-all ${
+                isSelected 
+                  ? 'bg-primary text-primary-foreground border-primary' 
+                  : 'bg-background border-border hover:border-primary/50'
+              }`}
+            >
+              <span className="en-text">{getQuantityLabel(option, 'en')}</span>
+              <span className="hi-text hindi-text">{getQuantityLabel(option, 'hi')}</span>
+              <span className="ml-1 font-semibold">₹{price}</span>
+            </button>
+          );
+        })}
+      </div>
+    );
   };
 
   const renderIncludes = () => {
@@ -213,21 +167,53 @@ export function FoodCard({ item }: FoodCardProps) {
           {/* Includes for thali/handi items */}
           {(item.pricingType === 'thali' || item.pricingType === 'per-kg') && renderIncludes()}
 
+          {/* Quantity Options */}
+          <div className="mt-3">
+            {renderQuantityOptions()}
+          </div>
+
           {/* Price and Spice Level */}
-          <div className="flex items-center justify-between mb-4 mt-3">
-            {renderPricing()}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold text-primary">₹{currentPrice * quantity}</span>
+              {item.originalPrice && selectedOption === '1kg' && (
+                <span className="text-sm text-muted-foreground line-through">
+                  ₹{item.originalPrice}
+                </span>
+              )}
+            </div>
             {renderSpiceLevel()}
           </div>
 
-          {/* Actions */}
-          <div className="flex gap-2">
-            <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="flex-1">
-              <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 gap-2">
-                <Phone className="h-4 w-4" />
-                <span className="en-text">Order</span>
-                <span className="hi-text hindi-text">ऑर्डर</span>
+          {/* Quantity Selector and Add to Cart */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center border border-border rounded-md">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              >
+                <Minus className="h-4 w-4" />
               </Button>
-            </a>
+              <span className="w-8 text-center font-medium">{quantity}</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => setQuantity(quantity + 1)}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+            <Button 
+              className="flex-1 bg-gradient-to-r from-primary to-secondary hover:opacity-90 gap-2"
+              onClick={handleAddToCart}
+            >
+              <ShoppingCart className="h-4 w-4" />
+              <span className="en-text">Add</span>
+              <span className="hi-text hindi-text">जोड़ें</span>
+            </Button>
             <Button
               variant="outline"
               size="icon"
@@ -260,6 +246,28 @@ export function FoodCard({ item }: FoodCardProps) {
               <span className="hi-text hindi-text">{item.descriptionHi}</span>
             </DialogDescription>
 
+            {/* Price Options in Dialog */}
+            <div className="bg-muted/50 rounded-lg p-3">
+              <p className="text-sm font-semibold mb-2">
+                <span className="en-text">Price Options:</span>
+                <span className="hi-text hindi-text">कीमत विकल्प:</span>
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {quantityOptions.map((option) => {
+                  const price = calculatePrice(item, option);
+                  return (
+                    <div key={option} className="text-center p-2 bg-background rounded-md border border-border">
+                      <span className="block text-xs text-muted-foreground">
+                        <span className="en-text">{getQuantityLabel(option, 'en')}</span>
+                        <span className="hi-text hindi-text">{getQuantityLabel(option, 'hi')}</span>
+                      </span>
+                      <span className="font-bold text-primary">₹{price}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Includes in Dialog */}
             {item.includes && (
               <div className="bg-muted/50 rounded-lg p-3">
@@ -285,9 +293,6 @@ export function FoodCard({ item }: FoodCardProps) {
             )}
 
             <div className="flex items-center justify-between">
-              <div>
-                {renderPricing()}
-              </div>
               <div className="flex items-center gap-2">
                 {item.isVeg ? (
                   <Badge variant="outline" className="border-green-500 text-green-500">
@@ -301,18 +306,6 @@ export function FoodCard({ item }: FoodCardProps) {
                 {renderSpiceLevel()}
               </div>
             </div>
-            <a
-              href={whatsappLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block"
-            >
-              <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 gap-2">
-                <Phone className="h-4 w-4" />
-                <span className="en-text">Order on WhatsApp</span>
-                <span className="hi-text hindi-text">व्हाट्सएप पर ऑर्डर करें</span>
-              </Button>
-            </a>
           </div>
         </DialogContent>
       </Dialog>
