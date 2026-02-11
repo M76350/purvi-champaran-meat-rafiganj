@@ -10,9 +10,11 @@ import {
 } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { ShoppingCart, Trash2, Plus, Minus, MessageCircle } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, MessageCircle, PlusCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export function CartDrawer() {
+  const navigate = useNavigate();
   const { 
     items, 
     isCartOpen, 
@@ -23,6 +25,11 @@ export function CartDrawer() {
     totalItems,
     totalPrice 
   } = useCart();
+
+  const handleAddMore = () => {
+    setIsCartOpen(false);
+    navigate('/menu');
+  };
 
   const generateWhatsAppMessage = () => {
     if (items.length === 0) return '';
@@ -61,10 +68,15 @@ export function CartDrawer() {
         </SheetHeader>
 
         {items.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground">
-            <ShoppingCart className="h-16 w-16 mb-4 opacity-30" />
+          <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground gap-4">
+            <ShoppingCart className="h-16 w-16 mb-2 opacity-30" />
             <p className="en-text">Your cart is empty</p>
             <p className="hi-text hindi-text">आपका कार्ट खाली है</p>
+            <Button variant="outline" onClick={handleAddMore} className="gap-2">
+              <PlusCircle className="h-4 w-4" />
+              <span className="en-text">Browse Menu</span>
+              <span className="hi-text hindi-text">मेन्यू देखें</span>
+            </Button>
           </div>
         ) : (
           <>
@@ -93,6 +105,14 @@ export function CartDrawer() {
                           ₹{cartItem.unitPrice}
                         </span>
                       </div>
+                      {cartItem.item.includes && (
+                        <div className="mt-1">
+                          <p className="text-[10px] text-muted-foreground">
+                            <span className="en-text">Includes: {cartItem.item.includes.en.join(', ')}</span>
+                            <span className="hi-text hindi-text">शामिल: {cartItem.item.includes.hi.join(', ')}</span>
+                          </p>
+                        </div>
+                      )}
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center gap-1">
                           <Button
@@ -145,6 +165,12 @@ export function CartDrawer() {
                 </span>
                 <span className="text-primary">₹{totalPrice}</span>
               </div>
+
+              <Button variant="outline" onClick={handleAddMore} className="w-full gap-2 mb-2">
+                <PlusCircle className="h-4 w-4" />
+                <span className="en-text">Add More Items</span>
+                <span className="hi-text hindi-text">और आइटम जोड़ें</span>
+              </Button>
 
               <div className="flex gap-2">
                 <Button
